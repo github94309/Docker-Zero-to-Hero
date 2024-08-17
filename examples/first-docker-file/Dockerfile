@@ -1,23 +1,16 @@
-# Use Ubuntu as the base image
-FROM ubuntu
+FROM ubuntu:latest
 
-# Set the working directory in the container
+# Set the working directory in the image
 WORKDIR /app
 
-# Copy the requirements file and devops directory into the container
-COPY requirements.txt /app
-COPY devops /app
+# Copy the files from the host file system to the image file system
+COPY . /app
 
-# Install necessary packages and create a virtual environment
-RUN apt-get update && \
-    apt-get install -y python3 python3-venv && \
-    python3 -m venv /app/venv && \
-    /app/venv/bin/pip install --upgrade pip && \
-    /app/venv/bin/pip install -r requirements.txt
+# Install the necessary packages
+RUN apt-get update && apt-get install -y python3 python3-pip
 
-# Ensure all subsequent commands use the virtual environment
-ENV PATH="/app/venv/bin:$PATH"
+# Set environment variables
+ENV NAME World
 
-# Set the default command to run your application
-ENTRYPOINT ["python3"]
-CMD ["manage.py", "runserver", "0.0.0.0:8000"]
+# Run a command to start the application
+CMD ["python3", "app.py"]
